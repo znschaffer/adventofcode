@@ -34,5 +34,6 @@ func main() {
 
 	sort.Ints(totals)
 
-	fmt.Printf("Largest Total: %d\nCombined Three Largest: %d\n", totals[totalLen-1], (totals[totalLen-1] + totals[totalLen-2] + totals[totalLen-3]))
+	fmt.Printf("Largest Total: %d\n", totals[totalLen-1])
+	fmt.Printf("Combined Three Largest: %d\n", (totals[totalLen-1] + totals[totalLen-2] + totals[totalLen-3]))
 }
