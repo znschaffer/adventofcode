@@ -1,11 +1,10 @@
 package main
 
 import (
-	"bufio"
-	"flag"
 	"fmt"
 	"math/bits"
 	"os"
+	"strings"
 )
 
 type bitSet struct {
@@ -46,34 +45,36 @@ func compareThreeStrings(s1 string, s2 string, s3 string) int {
 	return formatItem(item)
 }
 
-func main() {
-	part := flag.String("part", "a", "part of aoc problem")
-	flag.Parse()
-	f, err := os.Open("../input/day03.txt")
+func parseInput() []string {
+	data, err := os.ReadFile("input.txt")
 	if err != nil {
-		panic(err)
+		fmt.Println(err.Error())
+		os.Exit(1)
 	}
-	defer f.Close()
+	return strings.Split(string(data), "\n")
+}
 
-	s := bufio.NewScanner(f)
-	var sum int
+func solve(input []string) (int, int) {
+	part1 := 0
+	part2 := 0
 	var numLines int
 	var lines []string
-
-	for s.Scan() {
-		switch *part {
-		case "a":
-			sum += compareOneString(s.Text())
-		case "b":
-			lines = append(lines, s.Text())
-			numLines = (numLines + 1) % 3
-			if numLines == 0 && lines != nil {
-				badgeNumber := compareThreeStrings(lines[0], lines[1], lines[2])
-				sum += badgeNumber
-				lines = nil
-			}
+	for _, line := range input {
+		part1 += compareOneString(line)
+		lines = append(lines, line)
+		numLines = (numLines + 1) % 3
+		if numLines == 0 && lines != nil {
+			badgeNumber := compareThreeStrings(lines[0], lines[1], lines[2])
+			part2 += badgeNumber
+			lines = nil
 		}
 	}
+	return part1, part2
+}
 
-	fmt.Printf("%d\n", sum)
+func main() {
+	data := parseInput()
+	part1, part2 := solve(data)
+	fmt.Printf("Part 1:\t%v\n", part1)
+	fmt.Printf("Part 2:\t%v\n", part2)
 }
