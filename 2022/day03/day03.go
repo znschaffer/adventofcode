@@ -5,6 +5,7 @@ import (
 	"math/bits"
 	"os"
 	"strings"
+	"time"
 )
 
 type bitSet struct {
@@ -15,7 +16,7 @@ func (c *bitSet) setRune(i rune) {
 	c.bits |= 1 << (i - 'A')
 }
 
-func setString(s string) bitSet {
+func strToBits(s string) bitSet {
 	var cSet bitSet
 	for _, rune := range s {
 		cSet.setRune(rune)
@@ -23,7 +24,7 @@ func setString(s string) bitSet {
 	return cSet
 }
 
-func formatItem(i int) int {
+func formatLetter(i int) int {
 	if i > 96 {
 		i -= 96
 	} else {
@@ -32,17 +33,22 @@ func formatItem(i int) int {
 	return i
 }
 
-func compareOneString(s string) int {
-	splitStringLen := len(s) / 2
-	l, r := setString(s[:splitStringLen]), setString(s[splitStringLen:])
-	item := bits.TrailingZeros64(l.bits&r.bits) + 'A'
-	return formatItem(item)
+func compareLine(s string) int {
+	halfLen := len(s) / 2
+
+	l, r := strToBits(s[:halfLen]), strToBits(s[halfLen:])
+
+	letter := bits.TrailingZeros64(l.bits&r.bits) + 'A'
+
+	return formatLetter(letter)
 }
 
-func compareThreeStrings(s1 string, s2 string, s3 string) int {
-	s1Bits, s2Bits, s3Bits := setString(s1), setString(s2), setString(s3)
-	item := bits.TrailingZeros64(s1Bits.bits&s2Bits.bits&s3Bits.bits) + 'A'
-	return formatItem(item)
+func compareGroup(group []string) int {
+	s1, s2, s3 := strToBits(group[0]), strToBits(group[1]), strToBits(group[2])
+
+	letter := bits.TrailingZeros64(s1.bits&s2.bits&s3.bits) + 'A'
+
+	return formatLetter(letter)
 }
 
 func parseInput() []string {
@@ -58,23 +64,31 @@ func solve(input []string) (int, int) {
 	part1 := 0
 	part2 := 0
 	var numLines int
-	var lines []string
+	var group []string
+
 	for _, line := range input {
-		part1 += compareOneString(line)
-		lines = append(lines, line)
+		part1 += compareLine(line)
+
+		group = append(group, line)
 		numLines = (numLines + 1) % 3
-		if numLines == 0 && lines != nil {
-			badgeNumber := compareThreeStrings(lines[0], lines[1], lines[2])
-			part2 += badgeNumber
-			lines = nil
+
+		if numLines == 0 && group != nil {
+			part2 += compareGroup(group)
+			group = nil
 		}
 	}
 	return part1, part2
 }
 
 func main() {
+	start := time.Now()
 	data := parseInput()
+	solveStart := time.Now()
 	part1, part2 := solve(data)
+	solveTime := time.Since(solveStart)
+
 	fmt.Printf("Part 1:\t%v\n", part1)
 	fmt.Printf("Part 2:\t%v\n", part2)
+	fmt.Printf("Solve Time:\t%s\n", solveTime)
+	fmt.Printf("Run Time:\t%s\n", time.Since(start))
 }

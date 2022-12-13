@@ -17,8 +17,7 @@ func parseInput() []string {
 }
 
 func solve(input []string) ([]byte, []byte) {
-
-    // hardcoded input like a wimp
+	// hardcoded input like a wimp
 	stacks := [][]byte{
 		{'H', 'R', 'B', 'D', 'Z', 'F', 'L', 'S'},
 		{'T', 'B', 'M', 'Z', 'R'},
@@ -38,8 +37,8 @@ func solve(input []string) ([]byte, []byte) {
 	var part2 []byte
 
 	for _, line := range input {
-		var p1x byte
-		var p2x []byte
+		var p1temp byte
+		var p2temp []byte
 		inst := strings.Split(line, " ")
 		if inst[0] != "move" {
 			continue
@@ -51,15 +50,17 @@ func solve(input []string) ([]byte, []byte) {
 		src--
 		dest--
 
-        // part 1 instructions
+		// part 1 instructions
 		for i := 0; i < amt; i++ {
-			p1x, p1stacks[src] = p1stacks[src][len(p1stacks[src])-1], p1stacks[src][:(len(p1stacks[src])-1)]
-			p1stacks[dest] = append(p1stacks[dest], p1x)
+			p1len := len(p1stacks[src]) - 1
+			p1temp, p1stacks[src] = p1stacks[src][p1len], p1stacks[src][:p1len]
+			p1stacks[dest] = append(p1stacks[dest], p1temp)
 		}
 
-        // part 2 instructions
-		p2x, p2stacks[src] = p2stacks[src][(len(p2stacks[src])-amt):], p2stacks[src][:(len(p2stacks[src])-amt)]
-		p2stacks[dest] = append(p2stacks[dest], p2x...)
+		// part 2 instructions
+		p2len := len(p2stacks[src]) - amt
+		p2temp, p2stacks[src] = p2stacks[src][p2len:], p2stacks[src][:p2len]
+		p2stacks[dest] = append(p2stacks[dest], p2temp...)
 	}
 
 	for _, stack := range p1stacks {

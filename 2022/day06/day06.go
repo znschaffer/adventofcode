@@ -30,22 +30,7 @@ func solve(input []string) (int, int) {
 	part1 := 1
 	part2 := 1
 
-	for idx := range input {
-		if idx >= 13 {
-			var line string
-			for i := idx; i > (idx - 14); i-- {
-				line += input[i]
-			}
-			if checkUnique(line) {
-				break
-			}
-			part2++
-			continue
-		}
-		part2++
-		continue
-	}
-
+	// part 1
 	for idx := range input {
 		if idx >= 3 {
 			var line string
@@ -59,6 +44,23 @@ func solve(input []string) (int, int) {
 			continue
 		}
 		part1++
+		continue
+	}
+
+	// part 2
+	for idx := range input {
+		if idx >= 13 {
+			var line string
+			for i := idx; i > (idx - 14); i-- {
+				line += input[i]
+			}
+			if checkUnique(line) {
+				break
+			}
+			part2++
+			continue
+		}
+		part2++
 		continue
 	}
 
