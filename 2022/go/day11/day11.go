@@ -40,7 +40,8 @@ var (
 
 func parseWorry(d string) func(old int) int {
 	opString := monkeyWorryFuncRegex.FindString(d)
-	ops := strings.Split(strings.TrimSpace(opString), " ")
+	 ops := strings.Split(strings.TrimSpace(opString), " ")
+
 	if ops[2] == "old" {
 		switch ops[1] {
 		case "*":
